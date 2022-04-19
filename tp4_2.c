@@ -21,7 +21,8 @@ int main()
 
     // char **descripciones; // vector con punteros a cada descripción
     Tarea **vectorTareas; // vector con punteros a struct tarea
-    int nTareas;          // filas de ambos vectores
+    Tarea **tareasRealizadas;
+    int nTareas; // filas de ambos vectores
 
     char *buff = (char *)malloc(32 * sizeof(char));
     // Tarea *buffTarea = (Tarea *)malloc(sizeof(Tarea));
@@ -30,6 +31,12 @@ int main()
     scanf("%d", &nTareas);
 
     vectorTareas = (Tarea **)malloc(nTareas * sizeof(Tarea *));
+    tareasRealizadas = (Tarea **)malloc(nTareas * sizeof(Tarea *));
+
+    for (int i = 0; i < nTareas; i++)
+    {
+        tareasRealizadas[i] = NULL;
+    }
 
     for (int i = 0; i < nTareas; i++)
     {
@@ -38,8 +45,44 @@ int main()
         vectorTareas[i]->Descripcion = descripcionesTareas[rand() % 5];
         vectorTareas[i]->Duracion = rand() % 91 + 10; //(de 0 a 90) + 1
     }
-    // free(buff);
+    free(buff);
     // free()
 
-        return 0;
+    for (int i = 0; i < nTareas; i++)
+    {
+        int respuesta;
+        printf("Se realizó la tarea de %s? (0 / 1)\n", vectorTareas[i]->Descripcion);
+        scanf("%d", &respuesta);
+
+        if (respuesta)
+        {
+            tareasRealizadas[i] = vectorTareas[i];
+            vectorTareas[i] = NULL;
+        }
+    }
+
+    // FUNCION MOSTRAR TAREAS
+    printf("Tareas por realizar: \n");
+    for (int i = 0; i < nTareas; i++)
+    {
+        if (vectorTareas[i] != NULL)
+            printf("\t%d) %s\n", i + 1, vectorTareas[i]->Descripcion);
+    }
+
+    printf("\nTareas realizadas: \n");
+    for (int i = 0; i < nTareas; i++)
+    {
+        if (vectorTareas[i] != NULL)
+            printf("\t%d) %s\n", i + 1, tareasRealizadas[i]->Descripcion);
+    }
+
+    for (int i = 0; i < nTareas; i++)
+    {
+        free(vectorTareas[i]);
+        free(tareasRealizadas[i]);
+    }
+    free(vectorTareas);
+    free(tareasRealizadas);
+
+    return 0;
 }
