@@ -30,8 +30,8 @@ int main()
     srand((int)time(NULL));
     rand();
 
-    Tnodo **pendientes = NULL; //lista con tareas pendientes
-    Tnodo **realizadas = NULL; //lista con tareas realizadas
+    Tnodo *pendientes = NULL; //lista con tareas pendientes
+    Tnodo *realizadas = NULL; //lista con tareas realizadas
 
     int nTareas; 
     int respuesta; //toma 0 o 1 como respuesta si se realizaó la tarea o no 
@@ -41,7 +41,7 @@ int main()
 
     for (int i = 0; i < nTareas; i++) {
 
-        insertarNodo(pendientes, crearTarea(i));        
+        insertarNodo(&pendientes, crearTarea(i));        
 
     //CONTROL REALIZADAS/PENDIENTES
     }
@@ -51,13 +51,13 @@ int main()
     for (int i = 0; i < nTareas; i++) {
 
         // if (vectorTareas[i] != NULL)
-        printf("\t%d) %s. \tDuración: %d.\n", i + 1, pendientes[i]->T->Descripcion, pendientes[i]->T->Duracion);
+        printf("\t%d) %s. \tDuración: %d.\n", i + 1, pendientes[i].T->Descripcion, pendientes[i].T->Duracion);
     }
 
     // FUNCION LIBERAR MEMORIA
     for (int i = 0; i < nTareas; i++) {
-        free(pendientes[i]->T->Descripcion);
-        free(pendientes[i]->T);
+        free(pendientes[i].T->Descripcion);
+        free(pendientes[i].T);
     }
     // for (int i = 0; i < nTareas; i++) {
     //     free(tareasRealizadas[i]->Descripcion);
