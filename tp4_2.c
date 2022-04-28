@@ -17,12 +17,12 @@ struct Nodo {
     Tarea *T;
     struct Nodo *Siguiente;
 };
-
 typedef struct Nodo Tnodo;
 
 Tarea * crearTarea(int );
 Tnodo * crearNodo(Tarea *);
 void insertarNodo(Tnodo **, Tarea *);
+void mostrarLista(Tnodo *);
 
 
 int main()
@@ -48,12 +48,8 @@ int main()
 
     // FUNCION MOSTRAR TAREAS
     printf("Tareas por realizar: \n");
-    for (int i = 0; i < nTareas; i++) {
-
-        // if (vectorTareas[i] != NULL)
-        printf("\t%d) %s. \tDuración: %d.\n", i + 1, pendientes[i].T->Descripcion, pendientes[i].T->Duracion);
-    }
-
+    
+    mostrarLista(pendientes);
     // FUNCION LIBERAR MEMORIA
     for (int i = 0; i < nTareas; i++) {
         free(pendientes[i].T->Descripcion);
@@ -95,6 +91,19 @@ Tnodo * crearNodo(Tarea *T)
 void insertarNodo(Tnodo **start, Tarea *T)
 {
     Tnodo *nuevo = crearNodo(T);
-    nuevo->Siguiente = *start; //error
+
+    if(*start == NULL) {
+        nuevo->Siguiente = NULL;
+    } else {
+        nuevo->Siguiente = *start; //error
+    }
     *start = nuevo;
+}
+
+void mostrarLista(Tnodo *lista)
+{
+    while (lista != NULL) {
+        printf("%d) %s \t - Duración: %d\n", lista->T->TareaID, lista->T->Descripcion, lista->T->Duracion);
+        lista = lista->Siguiente;
+    }
 }
