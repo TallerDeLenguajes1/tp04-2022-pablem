@@ -13,79 +13,114 @@ typedef struct {
     int Duracion;      // entre 10 – 100
 } Tarea;
 
+struct Nodo {
+    Tarea *T;
+    struct Nodo *Siguiente;
+};
+
+typedef struct Nodo Tnodo;
+
+Tarea * crearTarea(int );
+Tnodo * crearNodo(Tarea *);
+void insertarNodo(Tnodo **, Tarea *);
+
+
 int main()
 {
     srand((int)time(NULL));
     rand();
 
-    Tarea **vectorTareas; //vector con los elementos punteros a struct tarea
-    Tarea **tareasRealizadas;
-    int nTareas; //filas de ambos vectores
+    Tnodo **pendientes = NULL; //lista con tareas pendientes
+    Tnodo **realizadas = NULL; //lista con tareas realizadas
+
+    int nTareas; 
     int respuesta; //toma 0 o 1 como respuesta si se realizaó la tarea o no 
 
-    char *buff = (char *)malloc(64 * sizeof(char)); //variable auxiliar para copiar una frase del arreglo descripciones
+    // char *buff = (char *)malloc(64 * sizeof(char)); //variable auxiliar para copiar una frase del arreglo descripciones
 
     printf("\nIngrese la cantidad de tareas a cargar: ");
     scanf("%d", &nTareas);
 
-    vectorTareas = (Tarea **)malloc(nTareas * sizeof(Tarea *));
-    tareasRealizadas = (Tarea **)malloc(nTareas * sizeof(Tarea *));
+    // vectorTareas = (Tarea **)malloc(nTareas * sizeof(Tarea *));
+    // tareasRealizadas = (Tarea **)malloc(nTareas * sizeof(Tarea *));
 
-    for (int i = 0; i < nTareas; i++) {
-        tareasRealizadas[i] = NULL;
-    }
-
-    for (int i = 0; i < nTareas; i++) {
-
-        vectorTareas[i] = (Tarea *)malloc(sizeof(Tarea));
-
-        vectorTareas[i]->TareaID = i;
-        vectorTareas[i]->Duracion = rand() % 91 + 10; //(de 0 a 90) + 1
-
-        //campo descripción:
-        strcpy(buff, descripcionesTareas[rand() % 5]);
-        vectorTareas[i]->Descripcion = (char *) malloc((strlen(buff)+1)*sizeof(char));
-        strcpy(vectorTareas[i]->Descripcion, buff);
-    }
-    free(buff);
+    // for (int i = 0; i < nTareas; i++) {
+    //     tareasRealizadas[i] = NULL;
+    // }
 
     for (int i = 0; i < nTareas; i++) {
 
-        printf("Se realizó la tarea de %s? (0 / 1)\n", vectorTareas[i]->Descripcion);
-        scanf("%d", &respuesta);
+        insertarNodo(pendientes, crearTarea(i));        
 
-        if (respuesta) {
-            tareasRealizadas[i] = vectorTareas[i];
-            vectorTareas[i] = NULL;
-        }
+    // for (int i = 0; i < nTareas; i++) {
+
+    //     printf("Se realizó la tarea de %s? (0 / 1)\n", vectorTareas[i]->Descripcion);
+    //     scanf("%d", &respuesta);
+
+    //     if (respuesta) {
+    //         tareasRealizadas[i] = vectorTareas[i];
+    //         vectorTareas[i] = NULL;
+    //     }
     }
 
     // FUNCION MOSTRAR TAREAS
     printf("Tareas por realizar: \n");
     for (int i = 0; i < nTareas; i++) {
 
-        if (vectorTareas[i] != NULL)
-            printf("\t%d) %s. \tDuración: %d.\n", i + 1, vectorTareas[i]->Descripcion, vectorTareas[i]->Duracion);
+        // if (vectorTareas[i] != NULL)
+        printf("\t%d) %s. \tDuración: %d.\n", i + 1, pendientes[i]->T->Descripcion, pendientes[i]->T->Duracion);
     }
 
-    printf("\nTareas realizadas: \n");
-    for (int i = 0; i < nTareas; i++) {
+    // printf("\nTareas realizadas: \n");
+    // for (int i = 0; i < nTareas; i++) {
 
-        if (tareasRealizadas[i] != NULL)
-            printf("\t%d) %s. \tDuración: %d.\n", i + 1, tareasRealizadas[i]->Descripcion, tareasRealizadas[i]->Duracion);
-    }
+    //     if (tareasRealizadas[i] != NULL)
+    //         printf("\t%d) %s. \tDuración: %d.\n", i + 1, tareasRealizadas[i]->Descripcion, tareasRealizadas[i]->Duracion);
+    // }
 
     // FUNCION LIBERAR MEMORIA
     for (int i = 0; i < nTareas; i++) {
-        free(vectorTareas[i]->Descripcion);
-        free(vectorTareas[i]);
+        free(pendientes[i]->T->Descripcion);
+        free(pendientes[i]->T);
     }
-    for (int i = 0; i < nTareas; i++) {
-        free(tareasRealizadas[i]->Descripcion);
-        free(tareasRealizadas[i]);
-    }
-    free(vectorTareas);
-    free(tareasRealizadas);
+    // for (int i = 0; i < nTareas; i++) {
+    //     free(tareasRealizadas[i]->Descripcion);
+    //     free(tareasRealizadas[i]);
+    // }
+    // free(vectorTareas);
+    // free(tareasRealizadas);
 
     return 0;
+}
+
+Tarea * crearTarea(int i)
+{
+    char *buff = (char *) malloc(64 * sizeof(char));
+    Tarea *T = (Tarea *) malloc(sizeof(Tarea));
+
+    T->TareaID = i;
+    T->Duracion = rand() % 91 + 10; //(de 0 a 90) + 1
+    //campo descripción:
+    strcpy(buff, descripcionesTareas[rand() % 5]);
+    T->Descripcion = (char *) malloc((strlen(buff)+1)*sizeof(char));
+    strcpy(T->Descripcion, buff);
+    free(buff);
+
+    return T;
+}
+
+Tnodo * crearNodo(Tarea *T) 
+{
+    Tnodo *nuevo = (Tnodo*) malloc(sizeof(Tnodo));
+    nuevo->T = T;
+    nuevo->Siguiente = NULL;
+
+    return nuevo;
+}
+
+void insertarNodo(Tnodo **start, Tarea *T)
+{
+    Tnodo *nuevo = crearNodo(T);
+    nuevo->Siguiente = *start;
+    *start = nuevo;
 }
