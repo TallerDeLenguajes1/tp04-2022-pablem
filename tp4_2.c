@@ -36,31 +36,14 @@ int main()
     int nTareas; 
     int respuesta; //toma 0 o 1 como respuesta si se realizaó la tarea o no 
 
-    // char *buff = (char *)malloc(64 * sizeof(char)); //variable auxiliar para copiar una frase del arreglo descripciones
-
     printf("\nIngrese la cantidad de tareas a cargar: ");
     scanf("%d", &nTareas);
-
-    // vectorTareas = (Tarea **)malloc(nTareas * sizeof(Tarea *));
-    // tareasRealizadas = (Tarea **)malloc(nTareas * sizeof(Tarea *));
-
-    // for (int i = 0; i < nTareas; i++) {
-    //     tareasRealizadas[i] = NULL;
-    // }
 
     for (int i = 0; i < nTareas; i++) {
 
         insertarNodo(pendientes, crearTarea(i));        
 
-    // for (int i = 0; i < nTareas; i++) {
-
-    //     printf("Se realizó la tarea de %s? (0 / 1)\n", vectorTareas[i]->Descripcion);
-    //     scanf("%d", &respuesta);
-
-    //     if (respuesta) {
-    //         tareasRealizadas[i] = vectorTareas[i];
-    //         vectorTareas[i] = NULL;
-    //     }
+    //CONTROL REALIZADAS/PENDIENTES
     }
 
     // FUNCION MOSTRAR TAREAS
@@ -71,13 +54,6 @@ int main()
         printf("\t%d) %s. \tDuración: %d.\n", i + 1, pendientes[i]->T->Descripcion, pendientes[i]->T->Duracion);
     }
 
-    // printf("\nTareas realizadas: \n");
-    // for (int i = 0; i < nTareas; i++) {
-
-    //     if (tareasRealizadas[i] != NULL)
-    //         printf("\t%d) %s. \tDuración: %d.\n", i + 1, tareasRealizadas[i]->Descripcion, tareasRealizadas[i]->Duracion);
-    // }
-
     // FUNCION LIBERAR MEMORIA
     for (int i = 0; i < nTareas; i++) {
         free(pendientes[i]->T->Descripcion);
@@ -87,8 +63,6 @@ int main()
     //     free(tareasRealizadas[i]->Descripcion);
     //     free(tareasRealizadas[i]);
     // }
-    // free(vectorTareas);
-    // free(tareasRealizadas);
 
     return 0;
 }
@@ -121,6 +95,6 @@ Tnodo * crearNodo(Tarea *T)
 void insertarNodo(Tnodo **start, Tarea *T)
 {
     Tnodo *nuevo = crearNodo(T);
-    nuevo->Siguiente = *start;
+    nuevo->Siguiente = *start; //error
     *start = nuevo;
 }
