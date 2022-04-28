@@ -23,6 +23,7 @@ Tarea * crearTarea(int );
 Tnodo * crearNodo(Tarea *);
 void insertarNodo(Tnodo **, Tarea *);
 void mostrarLista(Tnodo *);
+void liberarLista(Tnodo *);
 
 
 int main()
@@ -48,13 +49,11 @@ int main()
 
     // FUNCION MOSTRAR TAREAS
     printf("Tareas por realizar: \n");
-    
     mostrarLista(pendientes);
+
     // FUNCION LIBERAR MEMORIA
-    for (int i = 0; i < nTareas; i++) {
-        free(pendientes[i].T->Descripcion);
-        free(pendientes[i].T);
-    }
+    liberarLista(pendientes);
+
     // for (int i = 0; i < nTareas; i++) {
     //     free(tareasRealizadas[i]->Descripcion);
     //     free(tareasRealizadas[i]);
@@ -105,5 +104,16 @@ void mostrarLista(Tnodo *lista)
     while (lista != NULL) {
         printf("%d) %s \t - Duración: %d\n", lista->T->TareaID, lista->T->Descripcion, lista->T->Duracion);
         lista = lista->Siguiente;
+    }
+}
+
+void liberarLista(Tnodo *lista)
+{
+    Tnodo *aux;
+    while (lista != NULL) {
+       free(lista->T->Descripcion);
+       aux = lista;
+       lista = lista->Siguiente;
+       free(aux);
     }
 }
