@@ -22,12 +22,12 @@ typedef struct Nodo Tnodo;
 Tarea * crearTarea(int );
 Tnodo * crearNodo(Tarea *);
 void insertarNodo(Tnodo **, Tarea *);
-void copiarNodo(Tnodo **, Tnodo *);
-Tnodo * eliminarNodo(Tnodo *, int ); //Elimina y devuelve el nodo siguiente
+Tnodo * eliminarNodo(Tnodo *, int );//Elimina y devuelve el nodo siguiente
 void mostrarLista(Tnodo *);
 void liberarLista(Tnodo *);
-
-void control(Tnodo *, Tnodo **);
+void control(Tnodo *, Tnodo **);//si la tarea se ha realizado, la mueve a la segunda lista
+void buscarID(Tnodo *);
+void buscarPalabra(Tnodo *);
 
 
 int main()
@@ -38,17 +38,21 @@ int main()
     Tnodo *pendientes = NULL; //lista con tareas pendientes
     Tnodo *realizadas = NULL; //lista con tareas realizadas
 
-    int nTareas; 
+    int nTareas, id; 
 
-    printf("\nIngrese la cantidad (al menos 1) de tareas: ");
+    printf("\nIngrese la cantidad de tareas a realizar: ");
     scanf("%d", &nTareas);
 
     for (int i = 0; i < nTareas; i++) 
     {
         insertarNodo(&pendientes, crearTarea(i));        
     }
-    printf("\nTareas por realizar: \n");
+    printf("\nTareas generadas: \n");
     mostrarLista(pendientes);
+
+    // FUNCION BUSCAR TAREAS
+    buscarID(pendientes);
+    buscarPalabra(pendientes);
 
     // FUNCION CONTROL REALIZADAS/PENDIENTES Y MOVER
     printf("\n");
@@ -104,15 +108,35 @@ void insertarNodo(Tnodo **start, Tarea *T)
     *start = nuevo;
 }
 
-void copiarNodo(Tnodo **start, Tnodo *nuevo)
+void buscarID(Tnodo *lista)
 {
-    if(*start == NULL) {
-        nuevo->Siguiente = NULL;
-    } else {
-        nuevo->Siguiente = *start;
+    int id;
+    printf("\nBuscar - Ingrese nro de ID: ");
+    scanf("%d", &id);
+    while (lista != NULL) {
+        if(lista->T->TareaID == id){
+            printf("T%d - %s - Duración: %d\n", lista->T->TareaID, lista->T->Descripcion, lista->T->Duracion);
+            break;
+        }
+        lista = lista->Siguiente;
     }
-    //sin if?) nuevo->siguiente = *start;
-    *start = nuevo;
+}
+
+void buscarPalabra(Tnodo *lista)
+{
+    char *Buff;
+    Buff = (char *)malloc(32*sizeof(char));
+    printf("\nBuscar - Ingrese la palabra: ");
+    fflush(stdin);
+    gets(Buff);
+    
+    while (lista != NULL) {
+        if(strstr(lista->T->Descripcion, Buff) != NULL){
+            printf("T%d - %s - Duración: %d\n", lista->T->TareaID, lista->T->Descripcion, lista->T->Duracion);
+        }
+        lista = lista->Siguiente;
+    }
+    free(Buff);
 }
 
 void mostrarLista(Tnodo *lista)
