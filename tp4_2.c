@@ -13,6 +13,8 @@ typedef struct {
     int Duracion;      // entre 10 – 100
 } Tarea;
 
+void buscarPalabra(Tarea **, int );
+
 int main()
 {
     srand((int)time(NULL));
@@ -48,6 +50,9 @@ int main()
         strcpy(vectorTareas[i]->Descripcion, buff);
     }
     free(buff);
+
+    //FUNCION BUSCAR TAREA
+    buscarPalabra(vectorTareas, nTareas);
 
     for (int i = 0; i < nTareas; i++) {
 
@@ -88,4 +93,20 @@ int main()
     free(tareasRealizadas);
 
     return 0;
+}
+
+void buscarPalabra(Tarea **vector, int n){
+
+    char *Buff;
+    Buff = (char *)malloc(32*sizeof(char));
+    printf("\nBuscar - Ingrese la palabra: ");
+    fflush(stdin);
+    gets(Buff);
+
+    for (size_t i = 0; i < n; i++) {
+        if(strstr(vector[i]->Descripcion, Buff) != NULL) {
+            printf("\tT%d - %s - Duración: %d.\n", i , vector[i]->Descripcion, vector[i]->Duracion);
+        }
+    }
+    free(Buff);
 }
