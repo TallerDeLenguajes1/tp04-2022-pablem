@@ -11,7 +11,7 @@ typedef struct {
     int TareaID;       // Numerado en ciclo iterativo
     char *Descripcion; //
     int Duracion;      // entre 10 – 100
-} Tarea;
+} Tarea; //Tarea es tipo tarea: "Ttarea"
 
 struct Nodo {
     Tarea *T;
@@ -25,6 +25,8 @@ void insertarNodo(Tnodo **, Tarea *);
 void mostrarLista(Tnodo *);
 void liberarLista(Tnodo *);
 
+void controlMover(Tnodo **pendientes, Tnodo **realizadas);
+//controlMover es como eliminarNodo (de teoría) sin la función free()
 
 int main()
 {
@@ -35,17 +37,18 @@ int main()
     Tnodo *realizadas = NULL; //lista con tareas realizadas
 
     int nTareas; 
-    int respuesta; //toma 0 o 1 como respuesta si se realizaó la tarea o no 
 
-    printf("\nIngrese la cantidad de tareas a cargar: ");
+    printf("\nIngrese la cantidad de tareas a cargar: (por lo menos 1)");
     scanf("%d", &nTareas);
 
-    for (int i = 0; i < nTareas; i++) {
-
+    for (int i = 0; i < nTareas; i++) 
+    {
         insertarNodo(&pendientes, crearTarea(i));        
-
-    //CONTROL REALIZADAS/PENDIENTES
     }
+
+    // FUNCION CONTROL REALIZADAS/PENDIENTES Y MOVER
+
+    controlMover(&pendientes, &realizadas);     
 
     // FUNCION MOSTRAR TAREAS
     printf("Tareas por realizar: \n");
@@ -53,11 +56,6 @@ int main()
 
     // FUNCION LIBERAR MEMORIA
     liberarLista(pendientes);
-
-    // for (int i = 0; i < nTareas; i++) {
-    //     free(tareasRealizadas[i]->Descripcion);
-    //     free(tareasRealizadas[i]);
-    // }
 
     return 0;
 }
@@ -94,8 +92,9 @@ void insertarNodo(Tnodo **start, Tarea *T)
     if(*start == NULL) {
         nuevo->Siguiente = NULL;
     } else {
-        nuevo->Siguiente = *start; //error
+        nuevo->Siguiente = *start;
     }
+    //sin if?) nuevo->siguiente = *start;
     *start = nuevo;
 }
 
@@ -115,5 +114,34 @@ void liberarLista(Tnodo *lista)
        aux = lista;
        lista = lista->Siguiente;
        free(aux);
+    }
+}
+
+void controlMover(Tnodo **pendientes, Tnodo **realizadas)
+{
+    int respuesta; //toma 0 o 1 como respuesta si se realizaó la tarea o no 
+
+    Tnodo *aux = *pendientes;
+    Tnodo *aux2;
+    Tnodo *auxAnterior = *pendientes;
+
+    while (aux != NULL) {
+ 
+        printf("Se realizó la tarea de %s? (0 / 1)\n", aux->T->Descripcion);
+        scanf("%d", &respuesta);
+
+        if (respuesta) {
+
+            auxAnterior->Siguiente = aux->Siguiente;
+
+            //HACER FUNCION COPIAR NODO (es como insertar pero sin crearlo)
+            aux2 = aux;
+            aux2->Siguiente = *realizadas;
+            *realizadas = aux2;
+        }
+
+        auxAnterior = aux;
+        aux = aux->Siguiente;
+
     }
 }
