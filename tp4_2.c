@@ -22,11 +22,13 @@ typedef struct Nodo Tnodo;
 Tarea * crearTarea(int );
 Tnodo * crearNodo(Tarea *);
 void insertarNodo(Tnodo **, Tarea *);
+void copiarNodo(Tnodo **, Tnodo *);
+Tnodo * eliminarNodo(Tnodo *, int ); //Elimina y devuelve el nodo siguiente
 void mostrarLista(Tnodo *);
 void liberarLista(Tnodo *);
 
-void controlMover(Tnodo **pendientes, Tnodo **realizadas);
-//controlMover es como eliminarNodo (de teoría) sin la función free()
+void control(Tnodo *, Tnodo **);
+
 
 int main()
 {
@@ -38,24 +40,28 @@ int main()
 
     int nTareas; 
 
-    printf("\nIngrese la cantidad de tareas a cargar: (por lo menos 1)");
+    printf("\nIngrese la cantidad (al menos 1) de tareas: ");
     scanf("%d", &nTareas);
 
     for (int i = 0; i < nTareas; i++) 
     {
         insertarNodo(&pendientes, crearTarea(i));        
     }
+    printf("\nTareas por realizar: \n");
+    mostrarLista(pendientes);
 
     // FUNCION CONTROL REALIZADAS/PENDIENTES Y MOVER
+    printf("\n");
+    control(pendientes, &realizadas);
 
-    controlMover(&pendientes, &realizadas);     
-
-    // FUNCION MOSTRAR TAREAS
-    printf("Tareas por realizar: \n");
+    printf("\nTareas por realizar: \n");
     mostrarLista(pendientes);
+    printf("\nTareas realizadas: \n");
+    mostrarLista(realizadas);
 
     // FUNCION LIBERAR MEMORIA
     liberarLista(pendientes);
+    liberarLista(realizadas);
 
     return 0;
 }
@@ -98,10 +104,21 @@ void insertarNodo(Tnodo **start, Tarea *T)
     *start = nuevo;
 }
 
+void copiarNodo(Tnodo **start, Tnodo *nuevo)
+{
+    if(*start == NULL) {
+        nuevo->Siguiente = NULL;
+    } else {
+        nuevo->Siguiente = *start;
+    }
+    //sin if?) nuevo->siguiente = *start;
+    *start = nuevo;
+}
+
 void mostrarLista(Tnodo *lista)
 {
     while (lista != NULL) {
-        printf("%d) %s \t - Duración: %d\n", lista->T->TareaID, lista->T->Descripcion, lista->T->Duracion);
+        printf("T%d - %s - Duración: %d\n", lista->T->TareaID, lista->T->Descripcion, lista->T->Duracion);
         lista = lista->Siguiente;
     }
 }
@@ -117,31 +134,40 @@ void liberarLista(Tnodo *lista)
     }
 }
 
-void controlMover(Tnodo **pendientes, Tnodo **realizadas)
+void control(Tnodo *pendientes, Tnodo **realizadas)
 {
-    int respuesta; //toma 0 o 1 como respuesta si se realizaó la tarea o no 
-
-    Tnodo *aux = *pendientes;
-    Tnodo *aux2;
-    Tnodo *auxAnterior = *pendientes;
-
-    while (aux != NULL) {
- 
-        printf("Se realizó la tarea de %s? (0 / 1)\n", aux->T->Descripcion);
+    int respuesta; //toma 0 o 1 como respuesta si se realizaó la tarea o no
+    Tnodo *aux = pendientes;
+    
+    while(aux != NULL){
+        printf("Se realizó la tarea de %s? (0 / 1): ", aux->T->Descripcion);
         scanf("%d", &respuesta);
-
-        if (respuesta) {
-
-            auxAnterior->Siguiente = aux->Siguiente;
-
-            //HACER FUNCION COPIAR NODO (es como insertar pero sin crearlo)
-            aux2 = aux;
-            aux2->Siguiente = *realizadas;
-            *realizadas = aux2;
+        if(respuesta) {
+            insertarNodo(realizadas, aux->T);
+            aux = eliminarNodo(pendientes, pendientes->T->TareaID);
+        } else {
+            aux = aux->Siguiente;
         }
+    }
+}
 
+Tnodo * eliminarNodo(Tnodo *pendientes, int i)
+{
+    Tnodo *aux = pendientes;
+    Tnodo *auxAnterior = pendientes;
+
+    // if(aux->T->Descripcion == i) {//si el nodo a borrar es el primero
+    //     pendientes = aux->Siguiente;//modificar cabecera, usar puntero doble
+    //     free(aux);
+    // }
+
+    while (aux != NULL && aux->T->TareaID == i) {
         auxAnterior = aux;
         aux = aux->Siguiente;
-
     }
+    if(aux!=NULL) {
+        auxAnterior->Siguiente = aux->Siguiente;
+        free(aux); 
+    }
+    return auxAnterior->Siguiente;
 }
