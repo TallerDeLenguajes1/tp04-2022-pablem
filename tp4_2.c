@@ -14,6 +14,7 @@ typedef struct {
 } Tarea;
 
 void buscarPalabra(Tarea **, int );
+void buscarID(Tarea **, int );
 
 int main()
 {
@@ -53,6 +54,7 @@ int main()
 
     //FUNCION BUSCAR TAREA
     buscarPalabra(vectorTareas, nTareas);
+    buscarID(vectorTareas, nTareas);
 
     for (int i = 0; i < nTareas; i++) {
 
@@ -109,4 +111,18 @@ void buscarPalabra(Tarea **vector, int n){
         }
     }
     free(Buff);
+}
+
+void buscarID(Tarea **vector, int n){
+
+    int id;
+    printf("Buscar - Ingrese el id: ");
+    scanf("%d", &id);
+
+    for (size_t i = 0; i < n; i++) {
+        if(vector[i] != NULL && vector[i]->TareaID==id) {
+            printf("\tT%d - %s - Duración: %d.\n", i , vector[i]->Descripcion, vector[i]->Duracion);
+            break;
+        }
+    } 
 }
