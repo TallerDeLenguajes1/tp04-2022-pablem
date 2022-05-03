@@ -13,6 +13,8 @@ typedef struct {
     int Duracion;      // entre 10 – 100
 } Tarea;
 
+void buscarID(Tarea **, int );
+
 int main()
 {
     srand((int)time(NULL));
@@ -48,6 +50,9 @@ int main()
         strcpy(vectorTareas[i]->Descripcion, buff);
     }
     free(buff);
+
+    //FUNCION BUSCAR TAREA
+    buscarID(vectorTareas, nTareas);
 
     for (int i = 0; i < nTareas; i++) {
 
@@ -88,4 +93,18 @@ int main()
     free(tareasRealizadas);
 
     return 0;
+}
+
+void buscarID(Tarea **vector, int n){
+
+    int id;
+    printf("Buscar - Ingrese el id: ");
+    scanf("%d", &id);
+
+    for (size_t i = 0; i < n; i++) {
+        if(vector[i] != NULL && vector[i]->TareaID==id) {
+            printf("\tT%d - %s - Duración: %d.\n", i , vector[i]->Descripcion, vector[i]->Duracion);
+            break;
+        }
+    } 
 }
